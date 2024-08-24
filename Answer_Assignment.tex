@@ -1,0 +1,400 @@
+\documentclass[11 pt]{article}
+\usepackage{amsmath}
+\usepackage{color,pxfonts,fix-cm}
+\usepackage{latexsym}
+\usepackage[mathletters]{ucs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage{pict2e}
+\usepackage{wasysym}
+\usepackage[english]{babel}
+\usepackage{tikz}
+\pagestyle{empty}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=1.5 cm,paperwidth=595pt,paperheight=841pt]{geometry}
+\begin{document}
+{\large
+\begin{picture}(0,0)(0,0)
+
+\put(40,-69){\fontsize{14}{1}\usefont{T1}{cmr}{b} {n}\selectfont\color{black}Introduction to ML (CS771), Winter 2024}
+
+\put(40,-82){\fontsize{14}{1}\usefont{T1}{cmr}{b}{n}\selectfont\color{black}Indian Institute of Technology Kanpur}
+
+\put(40,-96){\fontsize{14}{1}\usefont{T1}{cmr}{b}{n}\selectfont\color{black} Assignment Number 1}
+
+\put(40,-116){\fontsize{14}{1}\usefont{T1}{cmr}{m}{it}\selectfont\color{black}Group Name: Model Mavericks }
+\put(40,-130){\fontsize{14}{1}\usefont{T1}{cmr}{m}{it}\selectfont\color{black}Instructor: Purushottam Kar}
+\put(40,-143){\fontsize{14}{1}\usefont{T1}{cmr}{m}{it}\selectfont\color{black}Date: \today}
+\put(380,-76){\fontsize{15}{1}\usefont{T1}{cmr}{b}{n}\selectfont\color{black}Assignment}
+\put(406,-136){\fontsize{72}{1}\usefont{T1}{cmr}{m}{n}\selectfont\color{black}1}
+\end{picture}
+
+\begin{tikzpicture}
+\path(0pt,0pt);
+\draw[black,line width=1pt]
+(40pt, -155pt) -- (460pt, -155pt)
+;
+\end{tikzpicture}
+
+
+\paragraph{\Large Team Members:\\}
+
+\begin{enumerate}
+    \item Himanshu Karnatak 231110017
+    \item Abhinandan Singh Baghel 231110002
+    \item Souvik Mukherjee 231110405
+    \item Hemanshu Pandey  231110409
+    \item Vishal Kumar   231110058 
+\end{enumerate}
+
+\setstretch{1.5}
+
+\section{Companion Arbiter PUF (CAR-PUF)}
+\subsection{ Detailed mathematical derivation}
+
+\paragraph{}
+
+Our major goal is to find $\phi$(x), in terms of 'x' and constants. We then need to find 'W' and 'b'.
+We need the number of dimensions 'D', in our 'W' and '$\phi$(x)' to exceed the value of '32', which is the no bits in our challenge, to each A-PUF's, i.e. we need to do feature scaling
+
+The two A-PUF's timing delay is found out using linear model, as we did for XOR-PUF, and is stored in some value, say $\Delta$$_w$ and $\Delta$$_r$, now we have a $\tau$ value, for our CAR-PUF. The condition we need to satisfy is 
+\begin{enumerate}
+    \item If |$\Delta$$_w$-$\Delta$$_r$| $\leq$ $\tau$, Then --> Response of CAR-PUF = '0'
+    \item If |$\Delta$$_w$-$\Delta$$_r$| $>$ $\tau$, Then --> Response of CAR-PUF = '1'
+\end{enumerate}    
+
+We'll need to leverage the two linear model's output to fit in this equation, which is the response of our CAR-PUF.
+
+\vspace{0.33 cm} 
+
+\[
+\cfrac{\text{1 + sign(W$^T$ $\phi(c)$  + b)}}{\text{2}}={r}
+\]
+\begin{flushright} \textbf{\textcolor{red}{- Equation 1}} \end{flushright}
+
+\vspace{0.33 cm} 
+
+We need to create a new linear model, with increased features, which takes in challenge for our CAR-PUFF, and predicts the response.
+
+\vspace{0.33 cm} 
+
+Let (u, p),(v, q) be the two linear models that can exactly predict the outputs of the two arbiter-PUFs sitting inside the CAR-PUF.
+
+\vspace{0.33 cm} 
+
+Let, the equations 
+\begin{enumerate} 
+\item U$^T$ . x  + p , predict $\Delta$$_w$
+\item V$^T$ . x  + q , predict $\Delta$$_r$
+\end{enumerate} 
+
+\vspace{0.33 cm} 
+
+Mapping the A-PUFF's linear models to CAR-PUFF response
+\begin{enumerate} 
+\item " Sign (|$\Delta$$_w$-$\Delta$$_r$| -$\tau$ $\leq$ $ 0$ ) " \textbf{-> Gives Response '0' <-} " Sign(W$^T$ $\phi(c)$  + b $\leq$ $ 0$ )"
+\item " Sign (|$\Delta$$_w$-$\Delta$$_r$| -$\tau$ $>$ $ 0$ ) " \textbf{-> Gives Response '1' <-} " Sign(W$^T$ $\phi(c)$  + b $>$ $ 0$ )"
+
+\vspace{0.33 cm}
+
+{\Large So, we have " Sign (|$\Delta$$_w$-$\Delta$$_r$| -$\tau$) "   $ \approx $  " Sign ( W$^T$ $\phi(c)$  + b )" } 
+
+\vspace{0.63 cm}
+Also, if we observe carefully, we always have,
+\vspace{0.33 cm}
+
+{\Large Sign(|$\Delta$$_w$-$\Delta$$_r$| -$\tau$)  $  ==  $   Sign(($\Delta$$_w$-$\Delta$$_r$)$^2$ -$\tau$$^2$)  }
+
+\end{enumerate} 
+\vspace{0.63 cm}
+
+
+\subsection{ Expanding the term " ($\Delta$$_w$-$\Delta$$_r$)$^2$ -$\tau$$^2$ " }
+
+
+Let the vector 'x' denote the 32 bit challenge.
+
+($\Delta$$_w$-$\Delta$$_r$)$^2$ -$\tau$$^2$ 
+
+(U$^T$ . x  + p - V$^T$ . x  - q)$^2$ - $\tau$$^2$  
+
+(U$^T$ . x  + p - V$^T$ . x  - q).(U$^T$ . x  + p - V$^T$ . x  - q) - $\tau$$^2$ 
+
+[(U$^T$ -  V$^T$) . x + ( p - q)].[(U$^T$ -  V$^T$) . x + ( p - q)] - $\tau$$^2$ 
+
+[(U$^T$ -  V$^T$) . x . (U$^T$ -  V$^T$) . x] + [ (U$^T$ -  V$^T$) . x . (p-q) ] +  [ (p-q). (U$^T$ -  V$^T$) . x ] + [ (p - q)$^2$ ] - $\tau$$^2$ 
+
+\begin{flushright} \textbf{\textcolor{red}{- Equation 2}} \end{flushright}
+
+We need to map \textbf{- Equation 2 } to \textbf{ Equation 1}
+
+\vspace{\baselineskip}
+
+Let us assume, 
+\begin{enumerate} 
+\item (U$^T$ -  V$^T$) as 'l' \hspace{1.3 cm}- Column Vector ( 32X1 )
+\item ( p - q ) as 'm' \hspace{1.3 cm}- Constant ( 1X1 )
+\end{enumerate} 
+
+\vspace{\baselineskip}
+
+\textbf{- Equation 2 } now becomes:
+
+( l$^T$ . x . l$^T$ . x ) +  ( l$^T$ . x . m )  +   ( m. l$^T$ . x )  + ( m )$^2$ - $\tau$$^2$ 
+\begin{flushright} \textbf{\textcolor{red}{- Equation 3}} \end{flushright}
+\vspace{\baselineskip}
+
+\subsection{ Visualizing, 'Equation 3' using a 2-D and 3-D Euclidean space }
+
+\newcommand{\aaa}{%
+\begin{bmatrix}
+    l1 \\
+    l2 \\
+\end{bmatrix}%
+}
+
+\vspace{\baselineskip}
+
+Let Col-Matrix $l$ and, Let Col-Matrix $x$ be:
+\[
+l = \aaa
+\]
+
+\newcommand{\aab}{%
+\begin{bmatrix}
+    x1 \\
+    x2 \\
+\end{bmatrix}%
+}
+
+\[
+x = \aab
+\]
+
+\vspace{\baselineskip}
+Placing them in Eqn. 2, we have:
+\vspace{\baselineskip}
+
+(l1.x1 + l2.x2).(l1.x1 + l2.x2) + 2. m. (l1.x1 + l2.x2) + m$^2$ - $\tau$$^2$ 
+
+( l1$^2$ . \textcolor{red}{x1$^2$} )+ ( l2$^2$ . \textcolor{red}{x2$^2$} ) + ( 2.l1.l2 .\textcolor{red}{x1.x2}) + (2.m.l1.\textcolor{red}{x1}) + (2.m.l2.\textcolor{red}{x2}) + m$^2$ - $\tau$$^2$ 
+
+\vspace{\baselineskip}
+Looking carefully, we can see, we have
+
+\textbullet \hspace{0.3 cm} \textcolor{red}{Constant terms} (like, m$^2$, $\tau$$^2$, etc), all will map to \textcolor{blue}{Bias} of our CAR-PUF model.
+
+\textbullet \hspace{0.3 cm} \textcolor{red}{x$_i$$^2$} terms,where i $\in$ [n], where 'n' is n-bit challenge to the PUF 
+
+\textbullet \hspace{0.3 cm} \textcolor{red}{x$_{ij}$ } terms,where i,j $\in$ [n], where 'n' is n-bit challenge to the PUF, where i $\neq$ j
+
+\textbullet \hspace{0.3 cm} \textcolor{red}{x$_i$} terms,where i $\in$ [n], where 'n' is n-bit challenge to the PUF
+
+\textbullet \hspace{0.3 cm} All the coefficients of \textcolor{red}{x$_i$$^2$}, \textcolor{red}{x$_{ij}$ }, and \textcolor{red}{x$_i$} will map to the \textcolor{blue}{Weight} of our CAR-PUF model.
+
+\textbullet \hspace{0.3 cm}  Since, we also have \textcolor{red}{x$_{ij}$  == x$_{ji}$  }, we can consider them together, as same feature.
+
+\textbullet \hspace{0.3 cm} In 2-D Euclidean space, We have, 2 \textcolor{red}{x$_{i}$$^2$} terms, {\Large$\binom{2}{2}$} \textcolor{red}{x$_{ij}$} terms, 2 \textcolor{red}{x$_i$} terms, and summing up all constants, we'll have one \textcolor{red}{constant} term.  
+
+\vspace{\baselineskip}
+
+\newcommand{\aaaa}{%
+\begin{bmatrix}
+    l1 \\
+    l2 \\
+    l3 \\
+\end{bmatrix}%
+}
+
+\vspace{\baselineskip}
+
+Let Col-Matrix $l$ and, Let Col-Matrix $x$ in the \textcolor{red}{ 3-D Euclidean space } be:
+\[
+l = \aaaa
+\]
+
+\newcommand{\aaab}{%
+\begin{bmatrix}
+    x1 \\
+    x2 \\
+    x3 \\
+\end{bmatrix}%
+}
+
+\[
+x = \aaab
+\]
+
+\vspace{\baselineskip}
+The 3-D Euclidean space's equation 3 will look like this:
+
+( l$^T$ . x . l$^T$ . x ) +  ( l$^T$ . x . m )  +   ( m. l$^T$ . x )  + ( m )$^2$ - $\tau$$^2$ 
+
+( l1.x1 + l2.x2 + l3.x3 ).( l1.x1 + l2.x2 + l3.x3 ) + 2. m. ( l1.x1 + l2.x2 + l3.x3 ) + m$^2$ - $\tau$$^2$ 
+
+( l1$^2$ . \textcolor{red}{x1$^2$} )+ ( l2$^2$ . \textcolor{red}{x2$^2$} ) + ( l3$^2$ . \textcolor{red}{x3$^2$} ) +( 2.l1.l2 .\textcolor{red}{x1.x2}) + ( 2.l1.l3 .\textcolor{red}{x1.x3}) + ( 2.l2.l3 .\textcolor{red}{x2.x3}) + (2.m.l1.\textcolor{red}{x1}) + (2.m.l2.\textcolor{red}{x2}) + (2.m.l3.\textcolor{red}{x3}) + m$^2$ - $\tau$$^2$ 
+
+\vspace{\baselineskip}
+\textbullet \hspace{0.3 cm} In 3-D Euclidean space, We have, 3 \textcolor{red}{x$_{i}$$^2$} terms, {\Large$\binom{3}{2}$} \textcolor{red}{x$_{ij}$} terms, 3 \textcolor{red}{x$_i$} terms, and summing up all constants, we'll have one \textcolor{red}{constant} term. 
+
+\vspace{\baselineskip}
+\textbullet \hspace{0.3 cm}So, we can observe a pattern here, In a \textcolor{blue}{N}-D Euclidean space, We have, \textcolor{blue}{N} \textcolor{red}{x$_{i}$$^2$} terms, {\Large$\binom{\textcolor{blue}{N}}{2}$} \textcolor{red}{x$_{ij}$} terms, \textcolor{blue}{N} \textcolor{red}{x$_i$} terms, and summing up all constants, we'll have one \textcolor{red}{constant} term. 
+
+
+
+\vspace{\baselineskip}
+\textbullet \hspace{0.3 cm} So, for \textcolor{red}{32-D Euclidean space} We'll have 
+
+\textbullet \hspace{0.3 cm} In 32-D Euclidean space, We have, 32 \textcolor{red}{x$_{i}$$^2$} terms, {\Large$\binom{32}{2}$} \textcolor{red}{x$_{ij}$} terms, 32 \textcolor{red}{x$_i$} terms, and summing up all constants, we'll have one \textcolor{red}{constant} term. 
+
+\textbullet \hspace{0.3 cm} Summing up 32 + {\Large$\binom{32}{2}$} + 32. We have {\Large\textcolor{blue}{560}} features, after feature expansion, and one constant term.
+
+\textbullet \hspace{0.3 cm} On careful observation, we can rule out all the \textcolor{red}{x$_i$$^2$}, as we always, change our input features as, (0 --> -1) and (1 --> +1), i.e. our input to feature is either '+1' or '-1', placing them in the \textcolor{red}{x$_i$$^2$}, we'll always have a '+1'. So using the \textcolor{red}{x$_i$$^2$}, we're always left with a "+ N.1" term ( where 'n' is n-bit challenge to the PUF ) which can can be summed up and placed inside the constant, as the feature squaring terms are only adding up a constant term to our model.
+
+\textbullet \hspace{0.3 cm} Now we have, 32 + {\Large$\binom{32}{2}$} + 32 - 32 features. We have {\Large\textcolor{blue}{528}} features, after feature expansion, and one constant term.
+
+\textbullet \hspace{0.3 cm} Now, these expanded features can be mapped to  our {\Large\textcolor{red}{$\phi$(x)}}, their coefficients to \textcolor{red}{Weight} and the constants to the \textcolor{red}{Bias term} of our CAR-PUF model.
+
+\section{ The Python Code }
+
+\textcolor{red}{The Python code is uploaded in Zipped format.}
+
+\section{ Outcomes of experiments ( how various hyper-parameters affected training time and test accuracy) }
+
+\vspace{\baselineskip}
+Feature Dimensions of CAR-PUF model, in all the cases is 528. 
+
+
+\vspace{\baselineskip}
+
+\begin{table}[h]
+\begin{flushleft}
+    \begin{tabularx}{\textwidth}{|2 |6 | X|X|X|X|}
+        \toprule
+        No. & Model & my\_fit() time & y\_fit() time & 1-acc & Accuracy in \%  \\
+        \midrule
+        
+\cline{1-6}
+1 & LinearSVC(C=1.0,penalty='l2',loss="hinge") & 13.9786 & 0.4178 & 0.0116 & 98.8400  \\ 
+2 & LinearSVC(C=7.0,penalty='l2',loss="hinge") & 18.0690 & 0.4638 & 0.0106 & 98.9400  \\        
+3 & LinearSVC(C=1.0,penalty='l2',loss="squared\_hinge") & 17.4795 & 0.4423 & 0.0108 & 98.9200  \\
+4 & LinearSVC(C=7.0,penalty='l2',loss="squared\_hinge") & 17.7801 & 0.6294 & 0.0102 & 98.9800  \\
+5 & LinearSVC(C=0.5) & 18.5890 & 0.4310 & 0.0102 & 98.9800  \\
+6 & LinearSVC(C=1.0) & 17.4961 & 0.4436 & 0.0109 & 98.9100  \\
+7 & LinearSVC(C=5.0) & 17.9272 & 0.4529 & 0.0102 & 98.9800  \\
+8 & LinearSVC(C=10.0) & 17.2468 & 0.4625 & 0.0112 & 98.8800  \\
+9 & LinearSVC(C=15.0) & 18.1448 & 0.4302 & 0.0111 & 98.8900  \\
+10 & LinearSVC(C=20.0) & 17.7691 & 0.5788 & 0.0106 & 98.9400  \\
+11 & LogisticRegression(C=0.5) & 3.3370 & 0.5265 & 0.0081 & 99.1900  \\
+12 & LogisticRegression(C=1.0) & 2.7665 & 0.4815 & 0.0080 & 99.2000  \\
+13 & LogisticRegression(C=5.0) & 3.2273 & 0.6879 & 0.0072 & 99.2800  \\
+14 & LogisticRegression(C=10.0) & 3.0794 & 0.4633 & 0.0074 & 99.2600  \\
+15 & LogisticRegression(C=15.0) & 3.2256 & 0.4985 & 0.0070 & 99.3000  \\
+16 & LogisticRegression(C=20.0) & 4.3639 & 0.4784 & 0.0069 & 99.3100  \\
+17 & LinearSVC(C=1.0,tol=0.00001) & 9.3351 & 0.4599 & 0.0092 & 99.0800  \\
+18 & LinearSVC(C=1.0,tol=0.0001) & 16.8530 & 0.4329 & 0.0091 & 99.0900  \\
+19 & LinearSVC(C=1.0,tol=0.01) & 17.3059 & 0.4367 & 0.0099 & 99.0100  \\
+20 & LinearSVC(C=1.0,tol=1.0) & 19.0229 & 0.4853 & 0.0094 & 99.0600  \\
+21 & LinearSVC(C=1.0,tol=2.0) & 17.8967 & 0.4552 & 0.0105 & 98.9500  \\
+22 & LogisticRegression(C=15,tol=0.00001) & 3.4964 & 0.4758 & 0.0070 & 99.3000  \\
+23 & LogisticRegression(C=15,tol=0.0001) & 4.1404 & 0.6782 & 0.0070 & 99.3000  \\
+24 & LogisticRegression(C=15,tol=0.01) & 3.8896 & 0.5068 & 0.0070 & 99.3000  \\
+25 & LogisticRegression(C=15,tol=1.0) & 3.1359 & 0.7025 & 0.0069 & 99.3100  \\
+26 & LogisticRegression(C=15,tol=2.0) & 3.2396 & 0.6824 & 0.0069 & 99.3100  \\
+       
+        \bottomrule
+    \end{tabularx}
+    \end{flushleft}
+    \caption{Model performance on different settings; All time in sec}
+    \label{tab:my_table}
+\end{table}
+\subsection{Effect of Changing the Loss Hyperparameter in LinearSVC}
+
+
+\vspace{0.33 cm} 
+
+Serial No. 1, 2, 3, 4 represent this effect. 
+\\
+\emph{Inference: }
+\\
+By changing the loss hyperparameter, we noticed that it doesn't change accuracy much , however the time taken to fit the model is lower in hinge loss as compared to that in the squared hinge loss significantly.
+
+\vspace{0.33 cm}
+
+\subsection{Effect of Setting C in LinearSVC and LogisticRegression }
+
+
+\vspace{0.33 cm} 
+
+Serial No. 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16  represent this effect. 
+\\
+\emph{Inference: }
+\\
+It can be noticed that when we are using Logistic Regression , it takes very less time to train the model compared to when we are using LinearSVC, also Logistic Regression gives better accuracy compared to LinearSVC for all the values of C that we have tried. However changing the values of C in a particular model ( LinearSVC or LogisticRegression ) doesn't change either the time or accuracy by a large factor.
+
+
+\vspace{0.33 cm}
+
+\subsection{Effect of Changing tol in LinearSVC and LogisicRegression}
+
+
+\vspace{0.33 cm} 
+
+Serial No. 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 represent this effect. 
+\\
+\emph{Inference: }
+\\
+Here also we can see that LogisticRegression is taking less time compared to the LinearSVC , however accuracies in this case is almost the same for both. In LinearSVC as we increase the tolerance then time taken to fit the model increases, on the other hand it doesn't increase so much in the LogisticRegression model.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+\end{document}
